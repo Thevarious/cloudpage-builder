@@ -2,10 +2,9 @@
 // Imports
 // ========================================
 
-const express = require('express');
-const path = require('path');
-const multer = require('multer');
-
+const express = require("express");
+const path = require("path");
+const multer = require("multer");
 
 // ========================================
 // App Setup
@@ -14,36 +13,30 @@ const multer = require('multer');
 const app = express();
 const PORT = 3000;
 
-
 // ========================================
 // File Upload Setup
 // Uploaded files are stored in /uploads
 // ========================================
 
 const upload = multer({
-  dest: 'uploads/'
+  dest: "uploads/",
 });
-
 
 // ========================================
 // Middleware
 // ========================================
 
-app.use(express.static('public'));
+app.use(express.static("public"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 
 // ========================================
 // Home Route
 // ========================================
 
-app.get('/', (req, res) => {
-  res.sendFile(
-    path.join(__dirname, 'public', 'index.html')
-  );
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
 });
-
 
 // ========================================
 // Analyze Design Route
@@ -52,36 +45,29 @@ app.get('/', (req, res) => {
 // ========================================
 
 app.post(
-  '/analyze-design',
+  "/analyze-design",
 
   upload.fields([
     {
-      name: 'designFiles',
-      maxCount: 10
+      name: "designFiles",
+      maxCount: 10,
     },
     {
-      name: 'functionalityFiles',
-      maxCount: 10
-    }
+      name: "functionalityFiles",
+      maxCount: 10,
+    },
   ]),
 
   (req, res) => {
-    const {
-      projectName,
-      inputSource,
-      webpageUrl,
-      requirements
-    } = req.body;
+    const { projectName, inputSource, webpageUrl, requirements } = req.body;
 
-    const designFiles =
-      req.files.designFiles || [];
+    const designFiles = req.files.designFiles || [];
 
-    const functionalityFiles =
-      req.files.functionalityFiles || [];
+    const functionalityFiles = req.files.functionalityFiles || [];
 
     res.json({
       success: true,
-      message: 'Design received successfully.',
+      message: "Design received successfully.",
 
       analysis: {
         projectName,
@@ -89,55 +75,53 @@ app.post(
         webpageUrl,
         requirements,
 
-        designFiles: designFiles.map(file => ({
+        designFiles: designFiles.map((file) => ({
           originalName: file.originalname,
           fileName: file.filename,
           mimeType: file.mimetype,
-          size: file.size
+          size: file.size,
         })),
 
-        functionalityFiles: functionalityFiles.map(file => ({
+        functionalityFiles: functionalityFiles.map((file) => ({
           originalName: file.originalname,
           fileName: file.filename,
           mimeType: file.mimetype,
-          size: file.size
+          size: file.size,
         })),
 
         detectedItems: [
-          'Header / logo area',
-          'Main content section',
-          'Possible form section',
-          'Footer area'
+          "Header / logo area",
+          "Main content section",
+          "Possible form section",
+          "Footer area",
         ],
 
         nextQuestions: [
-          'Should fields be required?',
-          'Do you need success popup?',
-          'Should popup contain SVG tick?',
-          'Should Bootstrap assets be local?',
-          'What data should be logged in console?'
-        ]
-      }
+          "Should fields be required?",
+          "Do you need success popup?",
+          "Should popup contain SVG tick?",
+          "Should Bootstrap assets be local?",
+          "What data should be logged in console?",
+        ],
+      },
     });
-  }
+  },
 );
-
 
 // ========================================
 // Generate Page Route
 // Creates final generated CloudPage HTML
 // ========================================
 
-app.post('/generate-page', (req, res) => {
+app.post("/generate-page", (req, res) => {
   const {
     projectName,
     requirements,
     fields,
     successTitle,
     successMessage,
-    showSuccessIcon
+    showSuccessIcon,
   } = req.body;
-
 
   // ========================================
   // Dynamic Field HTML Generator
@@ -145,23 +129,18 @@ app.post('/generate-page', (req, res) => {
 
   const fieldRowsHtml = (fields || [])
     .map((field, index) => {
-      const fieldId =
-        `field_${index + 1}`;
+      const fieldId = `field_${index + 1}`;
 
-      const label =
-        field.label || `Field ${index + 1}`;
+      const label = field.label || `Field ${index + 1}`;
 
-      const type =
-        field.type || 'text';
+      const type = field.type || "text";
 
-      const required =
-        field.required || 'no';
+      const required = field.required || "no";
 
-      const errorMessage =
-        field.errorMessage || 'This field cannot be blank.';
+      const errorMessage = field.errorMessage || "This field cannot be blank.";
 
       // Textarea
-      if (type === 'textarea') {
+      if (type === "textarea") {
         return `
           <div class="mb-3">
             <label class="form-label" for="${fieldId}">
@@ -184,7 +163,7 @@ app.post('/generate-page', (req, res) => {
       }
 
       // Checkbox with Other textarea
-      if (type === 'checkbox-other') {
+      if (type === "checkbox-other") {
         return `
           <div
             class="mb-3 checkbox-other-group"
@@ -247,7 +226,7 @@ app.post('/generate-page', (req, res) => {
           </label>
 
           <input
-            type="${type === 'email' ? 'email' : 'text'}"
+            type="${type === "email" ? "email" : "text"}"
             class="form-control cloudpage-field"
             id="${fieldId}"
             data-label="${label}"
@@ -260,8 +239,7 @@ app.post('/generate-page', (req, res) => {
         </div>
       `;
     })
-    .join('');
-
+    .join("");
 
   // ========================================
   // Final Generated HTML
@@ -279,7 +257,7 @@ app.post('/generate-page', (req, res) => {
   >
 
   <title>
-    ${projectName || 'CloudPage'}
+    ${projectName || "CloudPage"}
   </title>
 
   <link
@@ -391,11 +369,11 @@ app.post('/generate-page', (req, res) => {
     <section class="cloudpage-card">
 
       <h1>
-        ${projectName || 'Generated CloudPage'}
+        ${projectName || "Generated CloudPage"}
       </h1>
 
       <p>
-        ${requirements || 'No requirements added.'}
+        ${requirements || "No requirements added."}
       </p>
 
       <form id="cloudPageForm" novalidate>
@@ -412,21 +390,25 @@ app.post('/generate-page', (req, res) => {
   <div class="success-overlay" id="successOverlay">
     <div class="success-popup" id="successPopup">
 
-      ${showSuccessIcon ? `
+      ${
+        showSuccessIcon
+          ? `
       <div class="success-icon">
         <svg viewBox="0 0 52 52" aria-hidden="true">
           <circle class="success-circle" cx="26" cy="26" r="24"></circle>
           <path class="success-check" d="M14 27 L22 35 L38 17"></path>
         </svg>
       </div>
-      ` : ''}
+      `
+          : ""
+      }
 
       <h2>
-        ${successTitle || 'Thank you!'}
+        ${successTitle || "Thank you!"}
       </h2>
 
       <p>
-        ${successMessage || 'Your response has been submitted successfully.'}
+        ${successMessage || "Your response has been submitted successfully."}
       </p>
 
     </div>
@@ -632,25 +614,18 @@ app.post('/generate-page', (req, res) => {
 
   res.json({
     success: true,
-    html: generatedHtml
+    html: generatedHtml,
   });
 });
-
 
 // ========================================
 // Start Server
 // ========================================
 
 app.listen(PORT, async () => {
-  const url =
-    `http://localhost:${PORT}`;
+  const url = `http://localhost:${PORT}`;
 
-  console.log(
-    `Server running on ${url}`
-  );
-
-  const open =
-    await import('open');
-
+  console.log(`Server running on ${url}`);
+  const open = await import("open");
   await open.default(url);
 });
