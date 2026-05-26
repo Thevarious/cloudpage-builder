@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <title>CloudPage Builder</title>
+
+    <link rel="stylesheet" href="./assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+
+<body>
+
+    <div class="container py-5">
+        <div class="builder-card">
+
+            <h1 class="builder-title">
+                CloudPage Builder
+            </h1>
+
+            <p class="builder-subtitle">
+                Upload PDF, DOCX, image, ZIP, or webpage URL to start building a CloudPage.
+            </p>
+
+            <form id="builderForm">
+
+                <!-- Project Name -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        Project Name
+                    </label>
+
+                    <input type="text" class="form-control" id="projectName" name="projectName">
+                </div>
+
+                <!-- Input Source -->
+                <div class="mb-4">
+                    <label class="form-label">
+                        Input Source
+                    </label>
+
+                    <select class="form-select" id="inputSource" name="inputSource">
+                        <option value="">
+                            Select source
+                        </option>
+
+                        <option value="pdf">
+                            Upload PDF
+                        </option>
+
+                        <option value="docx">
+                            Upload Word File
+                        </option>
+
+                        <option value="image">
+                            Upload Image
+                        </option>
+
+                        <option value="url">
+                            Webpage URL
+                        </option>
+                    </select>
+                </div>
+
+                <!-- Design Files -->
+                <div class="mb-4 d-none" id="fileInputWrap">
+
+                    <label class="form-label">
+                        Design Files
+                    </label>
+
+                    <input type="file" class="form-control" id="designFiles" name="designFiles"
+                        accept=".pdf,.docx,.png,.jpg,.jpeg,.zip" multiple>
+
+                    <small class="text-muted">
+                        Supported:
+                        PDF, DOCX, PNG, JPG, ZIP.
+                        For Figma or PSD, export as PDF/PNG first.
+                    </small>
+
+                </div>
+
+                <!-- Functionality Files -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Functionality Files
+                    </label>
+
+                    <input type="file" class="form-control" id="functionalityFiles" name="functionalityFiles"
+                        accept=".docx,.txt,.pdf" multiple>
+
+                    <small class="text-muted">
+                        Upload functionality notes,
+                        validation rules,
+                        success popup details,
+                        or requirement documents.
+                    </small>
+
+                </div>
+
+                <!-- URL -->
+                <div class="mb-4 d-none" id="urlInputWrap">
+
+                    <label class="form-label">
+                        Webpage URL
+                    </label>
+
+                    <input type="url" class="form-control" id="webpageUrl" name="webpageUrl"
+                        placeholder="https://example.com/page">
+
+                </div>
+
+                <!-- Notes -->
+                <div class="mb-4">
+
+                    <label class="form-label">
+                        Requirements / Functionality Notes
+                    </label>
+
+                    <textarea class="form-control" rows="6" id="requirements" name="requirements" placeholder="Example:
+All fields optional,
+show success popup,
+console JSON should contain selected answers,
+show animated green tick,
+submit button disabled by default..."></textarea>
+
+                </div>
+
+                <!-- Analyze -->
+                <button type="submit" class="btn btn-primary">
+                    Analyze Design
+                </button>
+
+            </form>
+
+            <!-- Analysis -->
+            <div class="analysis-panel d-none" id="analysisPanel">
+
+                <h2>
+                    Analysis Result
+                </h2>
+
+                <pre id="analysisOutput"></pre>
+
+            </div>
+
+            <!-- Field Setup -->
+            <div class="field-config-panel d-none" id="fieldConfigPanel">
+
+                <h2>
+                    Form Field Validation Setup
+                </h2>
+
+                <div id="fieldRows"></div>
+
+                <button type="button" class="btn btn-outline-primary mt-3" id="addFieldBtn">
+                    Add Field
+                </button>
+
+                <hr>
+
+                <!-- Success Popup -->
+                <h2>
+                    Success Popup Setup
+                </h2>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Success Title
+                    </label>
+
+                    <input type="text" class="form-control" id="successTitle" value="Thank you!">
+
+                </div>
+
+                <div class="mb-3">
+
+                    <label class="form-label">
+                        Success Message
+                    </label>
+
+                    <textarea class="form-control" id="successMessage"
+                        rows="3">Your response has been submitted successfully.</textarea>
+
+                </div>
+
+                <div class="form-check">
+
+                    <input class="form-check-input" type="checkbox" id="showSuccessIcon" checked>
+
+                    <label class="form-check-label" for="showSuccessIcon">
+                        Show animated green SVG tick
+                    </label>
+
+                </div>
+
+                <!-- Generate -->
+                <button class="btn btn-success mt-4" id="generateBtn">
+                    Generate Sample Page
+                </button>
+
+            </div>
+            
+            <!-- Generated Output -->
+            <div class="analysis-panel d-none" id="generatedOutputPanel">
+
+                <h2>
+                    Generated HTML
+                </h2>
+
+                <textarea class="form-control" id="generatedHtmlOutput" rows="18"></textarea>
+
+                <div class="d-flex gap-3 mt-3">
+
+                    <button class="btn btn-outline-primary" id="copyHtmlBtn">
+                        Copy HTML
+                    </button>
+
+                    <button class="btn btn-outline-success" id="downloadHtmlBtn">
+                        Download HTML
+                    </button>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+    <script src="./assets/js/bootstrap.bundle.min.js"></script>
+    <script src="./js/app.js"></script>
+
+</body>
+
+</html>
