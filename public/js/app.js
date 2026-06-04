@@ -2,6 +2,8 @@
 // Main Builder Elements
 // ========================================
 
+const templateType = document.getElementById("templateType");
+
 const form = document.getElementById("builderForm");
 
 const inputSource = document.getElementById("inputSource");
@@ -254,6 +256,7 @@ generateBtn.addEventListener("click", async function () {
       successTitle,
       successMessage,
       showSuccessIcon,
+      templateType: templateType.value,
     }),
   });
 
