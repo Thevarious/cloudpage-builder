@@ -31,8 +31,8 @@
         <!-- Template Type -->
         <div class="mb-4">
           <label class="form-label">Template Type</label>
-
           <select class="form-select" id="templateType" name="templateType">
+            <option value="plain-page">Plain / Content Page</option>
             <option value="simple-form">Simple Form</option>
             <option value="survey-form">Survey / Multiple Choice Form</option>
           </select>
@@ -105,6 +105,12 @@ submit button disabled by default..."></textarea>
         <!-- Analyze -->
         <button type="submit" class="btn btn-primary">Analyze Design</button>
       </form>
+
+      <!-- File Preview -->
+      <div class="analysis-panel d-none" id="previewPanel">
+        <h2>Uploaded File Preview</h2>
+        <div id="previewContent"></div>
+      </div>
 
       <!-- Analysis -->
       <div class="analysis-panel d-none" id="analysisPanel">

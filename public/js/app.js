@@ -35,6 +35,10 @@ const copyHtmlBtn = document.getElementById("copyHtmlBtn");
 
 const downloadHtmlBtn = document.getElementById("downloadHtmlBtn");
 
+const previewPanel = document.getElementById("previewPanel");
+
+const previewContent = document.getElementById("previewContent");
+
 // ========================================
 // Utility:
 // Log uploaded files in console
@@ -170,6 +174,61 @@ function addFieldRow(fieldName = "") {
 addFieldBtn.addEventListener("click", function () {
   addFieldRow();
 });
+
+// ========================================
+// Preview Uploaded Files
+// ========================================
+
+function renderFilePreview() {
+  previewContent.innerHTML = "";
+
+  const allFiles = [
+    ...designFilesInput.files,
+    ...functionalityFilesInput.files,
+  ];
+
+  if (!allFiles.length) {
+    previewPanel.classList.add("d-none");
+    return;
+  }
+
+  previewPanel.classList.remove("d-none");
+
+  allFiles.forEach((file) => {
+    const fileCard = document.createElement("div");
+
+    fileCard.className = "border rounded p-3 mb-3 bg-white";
+
+    if (file.type.startsWith("image/")) {
+      const image = document.createElement("img");
+
+      image.src = URL.createObjectURL(file);
+      image.alt = file.name;
+      image.className = "img-fluid rounded mb-2";
+      image.style.maxHeight = "260px";
+
+      fileCard.appendChild(image);
+    }
+
+    const fileInfo = document.createElement("div");
+
+    fileInfo.innerHTML = `
+      <strong>${file.name}</strong><br>
+      <small>
+        ${file.type || "Unknown file type"} |
+        ${(file.size / 1024).toFixed(2)} KB
+      </small>
+    `;
+
+    fileCard.appendChild(fileInfo);
+
+    previewContent.appendChild(fileCard);
+  });
+}
+
+designFilesInput.addEventListener("change", renderFilePreview);
+
+functionalityFilesInput.addEventListener("change", renderFilePreview);
 
 // ========================================
 // Analyze Design Submit

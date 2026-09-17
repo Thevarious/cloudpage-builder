@@ -5,9 +5,20 @@
 const express = require("express");
 const path = require("path");
 const multer = require("multer");
+const OpenAI = require("openai");
+require("dotenv").config();
 
-const { generateSimpleFormTemplate } = require("./templates/simple-form-template");
-const { generateSurveyTemplate } = require("./templates/survey-template");
+const {
+  generateSimpleFormTemplate,
+} = require("./templates/simple-form-template");
+
+const {
+  generateSurveyTemplate,
+} = require("./templates/survey-template");
+
+const {
+  generatePlainPageTemplate,
+} = require("./templates/plain-page-template");
 
 // ========================================
 // App Setup
@@ -15,6 +26,64 @@ const { generateSurveyTemplate } = require("./templates/survey-template");
 
 const app = express();
 const PORT = 3000;
+
+console.log(process.env.OPENAI_API_KEY ? "API key loaded" : "No API key");
+
+// ========================================
+// OpenAI Client
+// ========================================
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+app.use(express.static("public"));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
+app.get("/test-openai", async (req, res) => {
+  try {
+    const response = await client.responses.create({
+      model: "gpt-4.1-mini",
+      input: "Say OpenAI connection successful",
+    });
+
+    res.json({
+      success: true,
+      response: response.output_text,
+    });
+  } 
+  // catch (error) {
+  //   // console.error(error);
+  //   console.error("OpenAI Error:", {
+  //     message: error.message,
+  //     status: error.status,
+  //     code: error.code,
+  //     type: error.type,
+  //   });
+  //   res.status(500).json({
+  //     success: false,
+  //     error: error.message,
+  //   });
+  // }
+  catch (error) {
+  console.error("OpenAI Error:", {
+    message: error.message,
+    status: error.status,
+    code: error.code,
+    type: error.type,
+    causeMessage: error.cause?.message,
+    causeCode: error.cause?.code,
+  });
+
+  res.status(500).json({
+    success: false,
+    error: error.message,
+    cause: error.cause?.message,
+    causeCode: error.cause?.code,
+  });
+}
+});
 
 // ========================================
 // File Upload Setup
@@ -24,14 +93,6 @@ const PORT = 3000;
 const upload = multer({
   dest: "uploads/",
 });
-
-// ========================================
-// Middleware
-// ========================================
-
-app.use(express.static("public"));
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
 
 // ========================================
 // Home Route
@@ -139,10 +200,22 @@ app.post("/generate-page", (req, res) => {
     showSuccessIcon,
   };
 
-  const generatedHtml =
-    templateType === "survey-form"
-      ? generateSurveyTemplate(templateData)
-      : generateSimpleFormTemplate(templateData);
+  let generatedHtml;
+
+  switch (templateType) {
+    case "plain-page":
+      generatedHtml = generatePlainPageTemplate(templateData);
+      break;
+
+    case "survey-form":
+      generatedHtml = generateSurveyTemplate(templateData);
+      break;
+
+    case "simple-form":
+    default:
+      generatedHtml = generateSimpleFormTemplate(templateData);
+      break;
+  }
 
   res.json({
     success: true,
